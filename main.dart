@@ -86,6 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
+    final isLandScape = mediaQuery.orientation == Orientation.landscape;
+
     final appBar = AppBar(
       title: Text('IoT Sensor Simulator'),
       actions: [
@@ -96,59 +98,107 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
     );
 
+    final bodyLandScape = SingleChildScrollView(
+      child: Column(
+        children: [
+          Container(
+            height: (mediaQuery.size.height -
+                    appBar.preferredSize.height -
+                    mediaQuery.padding.top) *
+                0.5,
+            child: Temperature(
+              _increaseTemperature,
+              _decreaseTemperature,
+              temp,
+            ),
+          ),
+          Container(
+            height: (mediaQuery.size.height -
+                    appBar.preferredSize.height -
+                    mediaQuery.padding.top) *
+                0.4,
+            child: HumanDetection(
+              detected,
+              _changeStatus,
+            ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            height: (mediaQuery.size.height -
+                    appBar.preferredSize.height -
+                    mediaQuery.padding.top) *
+                0.05,
+            child: Text('URL: $url'),
+          ),
+          Container(
+            height: (mediaQuery.size.height -
+                    appBar.preferredSize.height -
+                    mediaQuery.padding.top) *
+                0.05,
+            alignment: Alignment.center,
+            child: Text(
+              'Data Transmission Speed: $dts sec',
+            ),
+          ),
+        ],
+      ),
+    );
+
+    final bodyPortrait = SingleChildScrollView(
+      child: Column(
+        children: [
+          Container(
+            height: (mediaQuery.size.height -
+                    appBar.preferredSize.height -
+                    mediaQuery.padding.top) *
+                0.2,
+            child: Temperature(
+              _increaseTemperature,
+              _decreaseTemperature,
+              temp,
+            ),
+          ),
+          Container(
+            height: (mediaQuery.size.height -
+                    appBar.preferredSize.height -
+                    mediaQuery.padding.top) *
+                0.2,
+            child: HumanDetection(
+              detected,
+              _changeStatus,
+            ),
+          ),
+          Container(
+            height: (mediaQuery.size.height -
+                    appBar.preferredSize.height -
+                    mediaQuery.padding.top) *
+                0.5,
+          ),
+          Container(
+            alignment: Alignment.center,
+            height: (mediaQuery.size.height -
+                    appBar.preferredSize.height -
+                    mediaQuery.padding.top) *
+                0.05,
+            child: Text('URL: $url'),
+          ),
+          Container(
+            height: (mediaQuery.size.height -
+                    appBar.preferredSize.height -
+                    mediaQuery.padding.top) *
+                0.05,
+            alignment: Alignment.center,
+            child: Text(
+              'Data Transmission Speed: $dts sec',
+            ),
+          ),
+        ],
+      ),
+    );
+
     return Scaffold(
       appBar: appBar,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              height: (mediaQuery.size.height -
-                      appBar.preferredSize.height -
-                      mediaQuery.padding.top) *
-                  0.2,
-              child: Temperature(
-                _increaseTemperature,
-                _decreaseTemperature,
-                temp,
-              ),
-            ),
-            Container(
-              height: (mediaQuery.size.height -
-                      appBar.preferredSize.height -
-                      mediaQuery.padding.top) *
-                  0.2,
-              child: HumanDetection(
-                detected,
-                _changeStatus,
-              ),
-            ),
-            Container(
-              height: (mediaQuery.size.height -
-                      appBar.preferredSize.height -
-                      mediaQuery.padding.top) *
-                  0.5,
-            ),
-            Container(
-              alignment: Alignment.center,
-              height: (mediaQuery.size.height -
-                      appBar.preferredSize.height -
-                      mediaQuery.padding.top) *
-                  0.05,
-              child: Text('URL: $url'),
-            ),
-            Container(
-              height: (mediaQuery.size.height -
-                      appBar.preferredSize.height -
-                      mediaQuery.padding.top) *
-                  0.05,
-              alignment: Alignment.center,
-              child: Text(
-                'Data Transmission Speed: $dts sec',
-              ),
-            ),
-          ],
-        ),
-      ),
+      body: isLandScape ? bodyLandScape : bodyPortrait,
     );
   }
 }
