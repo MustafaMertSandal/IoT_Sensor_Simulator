@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:iot_sensor_simulator/http_request/post_request.dart';
 import 'package:iot_sensor_simulator/widgets/human_detection.dart';
 import 'package:iot_sensor_simulator/widgets/settings.dart';
 import 'package:iot_sensor_simulator/widgets/temperature.dart';
@@ -36,16 +39,44 @@ class _MyHomePageState extends State<MyHomePage> {
   bool detected = false;
   String url = '-';
   double dts = 1; //Data Transmission Speed
+  bool _turnOn = false;
+
+///////////////////////////////
+  ///
+  ///
+  ///  PostRequest().postData(temp, detected, url);
+  ///  if (_turnOn) PostRequest().postData(temp, detected, url),
+  ///
+//////////////////////////////////
+  Timer? timerPointer;
+
+  void _turn(bool val) {
+    setState(() {
+      _turnOn = val;
+      if (_turnOn) {
+        timerPointer = Timer.periodic(
+          Duration(seconds: 1),
+          (_) {
+            if (_turnOn) {
+              PostRequest().postData(temp, detected, url);
+            }
+          },
+        );
+      } else {
+        timerPointer!.cancel();
+      }
+    });
+  }
 
   void _increaseTemperature() {
     setState(() {
-      temp += 2;
+      temp += 1;
     });
   }
 
   void _decreaseTemperature() {
     setState(() {
-      temp -= 2;
+      temp -= 1;
     });
   }
 
@@ -105,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
             height: (mediaQuery.size.height -
                     appBar.preferredSize.height -
                     mediaQuery.padding.top) *
-                0.5,
+                0.4,
             child: Temperature(
               _increaseTemperature,
               _decreaseTemperature,
@@ -116,10 +147,37 @@ class _MyHomePageState extends State<MyHomePage> {
             height: (mediaQuery.size.height -
                     appBar.preferredSize.height -
                     mediaQuery.padding.top) *
-                0.4,
+                0.35,
             child: HumanDetection(
               detected,
               _changeStatus,
+            ),
+          ),
+          Container(
+            height: (mediaQuery.size.height -
+                    appBar.preferredSize.height -
+                    mediaQuery.padding.top) *
+                0.15,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  _turnOn ? 'Turn On' : 'Turn Off',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                Switch.adaptive(
+                  value: _turnOn,
+                  onChanged: (val) {
+                    setState(() {
+                      _turnOn = val;
+                    });
+                  },
+                ),
+              ],
             ),
           ),
           Container(
@@ -172,7 +230,32 @@ class _MyHomePageState extends State<MyHomePage> {
             height: (mediaQuery.size.height -
                     appBar.preferredSize.height -
                     mediaQuery.padding.top) *
-                0.5,
+                0.2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  _turnOn ? 'Turn On' : 'Turn Off',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 25,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
+                Switch.adaptive(
+                  value: _turnOn,
+                  onChanged: (val) {
+                    _turn(val);
+                  },
+                ),
+              ],
+            ),
+          ),
+          Container(
+            height: (mediaQuery.size.height -
+                    appBar.preferredSize.height -
+                    mediaQuery.padding.top) *
+                0.3,
           ),
           Container(
             alignment: Alignment.center,
@@ -189,7 +272,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 0.05,
             alignment: Alignment.center,
             child: Text(
-              'Data Transmission Speed: $dts sec',
+              'Data Transmission Speed: $dts sec $temp',
             ),
           ),
         ],
