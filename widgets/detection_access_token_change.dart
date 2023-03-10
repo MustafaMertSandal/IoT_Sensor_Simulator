@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 
-class DtsChange extends StatefulWidget {
-  final Function _changeDTS;
-  const DtsChange(this._changeDTS);
+class DetectionAccessTokenChange extends StatefulWidget {
+  final Function changeDetectionSensorAccessToken;
+  DetectionAccessTokenChange(this.changeDetectionSensorAccessToken);
 
   @override
-  State<DtsChange> createState() => _DtsChangeState();
+  State<DetectionAccessTokenChange> createState() =>
+      _DetectionAccessTokenChangeState();
 }
 
-class _DtsChangeState extends State<DtsChange> {
-  final _DTSController = TextEditingController();
+class _DetectionAccessTokenChangeState
+    extends State<DetectionAccessTokenChange> {
+  final _ATController = TextEditingController();
 
   void _change() {
-    if (_DTSController.text.isEmpty) {
+    if (_ATController.text.isEmpty) {
       return;
     }
-    widget._changeDTS(int.parse(_DTSController.text));
+    widget.changeDetectionSensorAccessToken(_ATController.text.toString());
     Navigator.of(context).pop();
   }
 
@@ -26,14 +28,13 @@ class _DtsChangeState extends State<DtsChange> {
       children: [
         TextField(
           decoration: InputDecoration(
-            labelText: 'Data Transmission Speed',
+            labelText: 'Detection Sensor Access Token',
           ),
-          controller: _DTSController,
-          keyboardType: TextInputType.number,
+          controller: _ATController,
           onSubmitted: (_) => _change(),
         ),
         ElevatedButton(
-          child: Text('Change DTS'),
+          child: Text('Change Access Token'),
           style: ButtonStyle(
               foregroundColor: MaterialStateProperty.all<Color?>(
                   Theme.of(context).textTheme.button?.color),

@@ -1,11 +1,24 @@
 import 'package:flutter/material.dart';
 
-class Temperature extends StatelessWidget {
+class Temperature extends StatefulWidget {
   final VoidCallback increaseTemp;
   final VoidCallback decreaseTemp;
   final double temp;
 
   Temperature(this.increaseTemp, this.decreaseTemp, this.temp);
+
+  @override
+  State<Temperature> createState() => _TemperatureState();
+}
+
+class _TemperatureState extends State<Temperature> {
+  // TextEditingController tempArea = TextEditingController();
+
+  // @override
+  // void initState() {
+  //   tempArea.text = '0'; //default text
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +64,7 @@ class Temperature extends StatelessWidget {
                       top: 3,
                     ),
                     child: Text(
-                      temp.toInt().toString() + '°C',
+                      widget.temp.toInt().toString() + '°C',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -73,7 +86,7 @@ class Temperature extends StatelessWidget {
                               shape: BoxShape.circle,
                               color: Theme.of(context).textTheme.button?.color),
                           child: IconButton(
-                            onPressed: decreaseTemp,
+                            onPressed: widget.decreaseTemp,
                             icon: Icon(
                               Icons.remove,
                               color: Theme.of(context).primaryColor,
@@ -90,7 +103,7 @@ class Temperature extends StatelessWidget {
                             color: Theme.of(context).textTheme.button?.color,
                           ),
                           child: IconButton(
-                            onPressed: increaseTemp,
+                            onPressed: widget.increaseTemp,
                             icon: Icon(
                               Icons.add,
                               color: Theme.of(context).primaryColor,

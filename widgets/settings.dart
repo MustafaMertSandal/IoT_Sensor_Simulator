@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:iot_sensor_simulator/widgets/dts_change.dart';
-import 'package:iot_sensor_simulator/widgets/url_change.dart';
+import 'package:iot_sensor_simulator/widgets/temp_access_token_change.dart';
+
+import 'detection_access_token_change.dart';
 
 class Settings extends StatelessWidget {
-  final Function changeURL;
+  final Function changeTempSensorAccessToken;
+  final Function changeDetectionSensorAccessToken;
   final Function changeDTS;
-  Settings(this.changeURL, this.changeDTS);
+  Settings(this.changeTempSensorAccessToken,
+      this.changeDetectionSensorAccessToken, this.changeDTS);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +26,8 @@ class Settings extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              UrlChange(changeURL),
+              TempAccessTokenChange(changeTempSensorAccessToken),
+              DetectionAccessTokenChange(changeDetectionSensorAccessToken),
               DtsChange(changeDTS),
             ],
           ),
