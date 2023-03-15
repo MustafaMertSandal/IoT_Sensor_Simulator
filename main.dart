@@ -6,6 +6,7 @@ import 'package:iot_sensor_simulator/icons/my_flutter_app_icons.dart';
 import 'package:iot_sensor_simulator/widgets/human_detection.dart';
 import 'package:iot_sensor_simulator/widgets/settings.dart';
 import 'package:iot_sensor_simulator/widgets/temperature.dart';
+import 'package:iot_sensor_simulator/widgets/variance_change.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,13 +36,14 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  double temp = 0;
+  int temp = 0;
   bool detected = false;
   String tempSensorAccessToken = '-';
   String detectionSensorAccessToken = '-';
   String tempUrl = '-';
   String detectionUrl = '-';
   int dts = 1; //Data Transmission Speed
+  int variance = 2;
   bool _turnOnTempSensor = false;
   bool _turnOnDetectionSensor = false;
   Timer? timerPointerTemp;
@@ -54,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage> {
         timerPointerTemp = Timer.periodic(
           Duration(seconds: dts),
           (_) {
-            PostRequest().postTemperatureData(temp, tempUrl);
+            PostRequest().postTemperatureData(temp, tempUrl, variance);
           },
         );
       } else {
@@ -76,6 +78,12 @@ class _MyHomePageState extends State<MyHomePage> {
       } else {
         timerPointerDetection!.cancel();
       }
+    });
+  }
+
+  void _setTemperature(int newTemp) {
+    setState(() {
+      temp = newTemp;
     });
   }
 
@@ -118,8 +126,9 @@ class _MyHomePageState extends State<MyHomePage> {
       () {
         dts = newDTS;
 
-        timerPointerDetection!.cancel();
-        timerPointerTemp!.cancel();
+        if (timerPointerDetection != null) timerPointerDetection!.cancel();
+
+        if (timerPointerTemp != null) timerPointerTemp!.cancel();
 
         if (_turnOnDetectionSensor) {
           timerPointerDetection = Timer.periodic(
@@ -133,12 +142,18 @@ class _MyHomePageState extends State<MyHomePage> {
           timerPointerTemp = Timer.periodic(
             Duration(seconds: dts),
             (_) {
-              PostRequest().postTemperatureData(temp, tempUrl);
+              PostRequest().postTemperatureData(temp, tempUrl, variance);
             },
           );
         }
       },
     );
+  }
+
+  void _changeVariance(int newVar) {
+    setState(() {
+      variance = newVar;
+    });
   }
 
   void _settings(BuildContext ctx) {
@@ -151,6 +166,9 @@ class _MyHomePageState extends State<MyHomePage> {
             _changeTempSensorAccessToken,
             _changeDetectionSensorAccessToken,
             _changeDTS,
+            tempSensorAccessToken,
+            detectionSensorAccessToken,
+            dts,
           ),
           behavior: HitTestBehavior.opaque,
         );
@@ -211,8 +229,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Temperature(
                   _increaseTemperature,
                   _decreaseTemperature,
+                  _setTemperature,
                   temp,
                 ),
+              ),
+              Container(
+                alignment: Alignment.center,
+                height: (mediaQuery.size.height -
+                        appBar.preferredSize.height -
+                        mediaQuery.padding.top) *
+                    0.15,
+                child: VarianceChange(_changeVariance, variance),
               ),
               Container(
                 height: (mediaQuery.size.height -
@@ -243,7 +270,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 height: (mediaQuery.size.height -
                         appBar.preferredSize.height -
                         mediaQuery.padding.top) *
-                    0.5,
+                    0.35,
               ),
               Container(
                 alignment: Alignment.center,
