@@ -231,6 +231,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   _decreaseTemperature,
                   _setTemperature,
                   temp,
+                  isLandScape,
                 ),
               ),
               Container(
@@ -239,7 +240,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         appBar.preferredSize.height -
                         mediaQuery.padding.top) *
                     0.15,
-                child: VarianceChange(_changeVariance, variance),
+                child: VarianceChange(_changeVariance, variance, isLandScape),
               ),
               Container(
                 height: (mediaQuery.size.height -
@@ -361,13 +362,163 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
     );
 
+    final bodyLandScape = TabBarView(
+      children: [
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                height: (mediaQuery.size.height -
+                        appBar.preferredSize.height -
+                        mediaQuery.padding.top) *
+                    0.5,
+                child: Row(
+                  children: [
+                    Flexible(
+                      flex: 1,
+                      fit: FlexFit.tight,
+                      child: Container(
+                        child: Temperature(
+                            _increaseTemperature,
+                            _decreaseTemperature,
+                            _setTemperature,
+                            temp,
+                            isLandScape),
+                      ),
+                    ),
+                    Flexible(
+                      flex: 1,
+                      fit: FlexFit.tight,
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: VarianceChange(
+                            _changeVariance, variance, isLandScape),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                height: (mediaQuery.size.height -
+                        appBar.preferredSize.height -
+                        mediaQuery.padding.top) *
+                    0.1,
+              ),
+              Container(
+                height: (mediaQuery.size.height -
+                        appBar.preferredSize.height -
+                        mediaQuery.padding.top) *
+                    0.2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _turnOnTempSensor ? 'Turn On' : 'Turn Off',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                    Switch.adaptive(
+                      value: _turnOnTempSensor,
+                      onChanged: (val) {
+                        _turnTempSensor(val);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                alignment: Alignment.center,
+                height: (mediaQuery.size.height -
+                        appBar.preferredSize.height -
+                        mediaQuery.padding.top) *
+                    0.1,
+                child: Text('Temperature Sensor URL: $tempUrl'),
+              ),
+              Container(
+                height: (mediaQuery.size.height -
+                        appBar.preferredSize.height -
+                        mediaQuery.padding.top) *
+                    0.1,
+                alignment: Alignment.center,
+                child: Text(
+                  'Data Transmission Speed: $dts sec',
+                ),
+              ),
+            ],
+          ),
+        ),
+        SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                height: (mediaQuery.size.height -
+                        appBar.preferredSize.height -
+                        mediaQuery.padding.top) *
+                    0.4,
+                child: HumanDetection(
+                  detected,
+                  _changeStatus,
+                ),
+              ),
+              Container(
+                height: (mediaQuery.size.height -
+                        appBar.preferredSize.height -
+                        mediaQuery.padding.top) *
+                    0.4,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      _turnOnDetectionSensor ? 'Turn On' : 'Turn Off',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 25,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                    Switch.adaptive(
+                      value: _turnOnDetectionSensor,
+                      onChanged: (val) {
+                        _turnDetectionSensor(val);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                alignment: Alignment.center,
+                height: (mediaQuery.size.height -
+                        appBar.preferredSize.height -
+                        mediaQuery.padding.top) *
+                    0.1,
+                child: Text('Detection Sensor URL: $detectionUrl'),
+              ),
+              Container(
+                height: (mediaQuery.size.height -
+                        appBar.preferredSize.height -
+                        mediaQuery.padding.top) *
+                    0.1,
+                alignment: Alignment.center,
+                child: Text(
+                  'Data Transmission Speed: $dts sec',
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+
     return DefaultTabController(
       initialIndex: 0,
       length: 2,
       child: Scaffold(
-          appBar: appBar,
-          body: bodyPortrait //isLandScape ? bodyLandScape : bodyPortrait,
-          ),
+        appBar: appBar,
+        body: isLandScape ? bodyLandScape : bodyPortrait,
+      ),
     );
   }
 }
