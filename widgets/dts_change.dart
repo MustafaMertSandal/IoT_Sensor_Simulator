@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 class DtsChange extends StatefulWidget {
   final Function _changeDTS;
-  const DtsChange(this._changeDTS);
+  final int dts;
+
+  const DtsChange(this._changeDTS, this.dts);
 
   @override
   State<DtsChange> createState() => _DtsChangeState();
@@ -11,12 +13,18 @@ class DtsChange extends StatefulWidget {
 class _DtsChangeState extends State<DtsChange> {
   final _DTSController = TextEditingController();
 
+  @override
+  void initState() {
+    _DTSController.text = widget.dts.toString();
+    super.initState();
+  }
+
   void _change() {
     if (_DTSController.text.isEmpty) {
       return;
     }
     widget._changeDTS(int.parse(_DTSController.text));
-    Navigator.of(context).pop();
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   @override

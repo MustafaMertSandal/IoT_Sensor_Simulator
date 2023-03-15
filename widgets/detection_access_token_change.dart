@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 
 class DetectionAccessTokenChange extends StatefulWidget {
   final Function changeDetectionSensorAccessToken;
-  DetectionAccessTokenChange(this.changeDetectionSensorAccessToken);
+  final String detectionSensorAccessToken;
+
+  DetectionAccessTokenChange(
+      this.changeDetectionSensorAccessToken, this.detectionSensorAccessToken);
 
   @override
   State<DetectionAccessTokenChange> createState() =>
@@ -13,12 +16,18 @@ class _DetectionAccessTokenChangeState
     extends State<DetectionAccessTokenChange> {
   final _ATController = TextEditingController();
 
+  @override
+  void initState() {
+    _ATController.text = widget.detectionSensorAccessToken.toString();
+    super.initState();
+  }
+
   void _change() {
     if (_ATController.text.isEmpty) {
       return;
     }
     widget.changeDetectionSensorAccessToken(_ATController.text.toString());
-    Navigator.of(context).pop();
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   @override
