@@ -8,8 +8,18 @@ class Settings extends StatelessWidget {
   final Function changeTempSensorAccessToken;
   final Function changeDetectionSensorAccessToken;
   final Function changeDTS;
-  Settings(this.changeTempSensorAccessToken,
-      this.changeDetectionSensorAccessToken, this.changeDTS);
+  final String tempSensorAccessToken;
+  final String detectionSensorAccessToken;
+  final int dts;
+
+  Settings(
+    this.changeTempSensorAccessToken,
+    this.changeDetectionSensorAccessToken,
+    this.changeDTS,
+    this.tempSensorAccessToken,
+    this.detectionSensorAccessToken,
+    this.dts,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +36,11 @@ class Settings extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              TempAccessTokenChange(changeTempSensorAccessToken),
-              DetectionAccessTokenChange(changeDetectionSensorAccessToken),
-              DtsChange(changeDTS),
+              TempAccessTokenChange(
+                  changeTempSensorAccessToken, tempSensorAccessToken),
+              DetectionAccessTokenChange(
+                  changeDetectionSensorAccessToken, detectionSensorAccessToken),
+              DtsChange(changeDTS, dts),
             ],
           ),
         ),
