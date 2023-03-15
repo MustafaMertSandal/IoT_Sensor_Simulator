@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 class TempAccessTokenChange extends StatefulWidget {
   final Function changeTempSensorAccessToken;
-  TempAccessTokenChange(this.changeTempSensorAccessToken);
+  final String tempSensorAccessToken;
+  TempAccessTokenChange(
+      this.changeTempSensorAccessToken, this.tempSensorAccessToken);
 
   @override
   State<TempAccessTokenChange> createState() => _TempAccessTokenChangeState();
@@ -11,12 +13,18 @@ class TempAccessTokenChange extends StatefulWidget {
 class _TempAccessTokenChangeState extends State<TempAccessTokenChange> {
   final _ATController = TextEditingController();
 
+  @override
+  void initState() {
+    _ATController.text = widget.tempSensorAccessToken.toString();
+    super.initState();
+  }
+
   void _change() {
     if (_ATController.text.isEmpty) {
       return;
     }
     widget.changeTempSensorAccessToken(_ATController.text.toString());
-    Navigator.of(context).pop();
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 
   @override
